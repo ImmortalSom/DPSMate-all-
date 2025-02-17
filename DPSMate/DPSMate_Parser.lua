@@ -1,7 +1,7 @@
 -- Events
 DPSMate.Parser:RegisterEvent("CHAT_MSG_COMBAT_PET_HITS")
 DPSMate.Parser:RegisterEvent("CHAT_MSG_COMBAT_PET_MISSES")
---DPSMate.Parser:RegisterEvent("CHAT_MSG_SPELL_PET_BUFF")
+DPSMate.Parser:RegisterEvent("CHAT_MSG_SPELL_PET_BUFF")
 DPSMate.Parser:RegisterEvent("CHAT_MSG_SPELL_PET_DAMAGE")
 
 DPSMate.Parser:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS")
@@ -492,8 +492,14 @@ local GetPlayerBuff = GetPlayerBuff
 
 -- SuperWoW clean
 function DPSMate.Parser:SuperWoWClean(arg)
-	local fword = arg:match("^(%S+)")
-	return string.gsub(arg, "%s*%(" .. UnitName("player") .. "%)*", ""):gsub("%s*%(" .. fword .. "%)%s*", "")
+	local fword = ""
+	for f_word in string.gmatch(arg, "%S+") do
+		fword = f_word
+		break
+	end
+	local result = string.gsub(arg, "%s*%(" .. UnitName("player") .. "%)*", "")
+	result = string.gsub(result, "%s*%(" .. fword .. "%)%s*", "")
+	return result
 end 
 
 -- Begin Functions
@@ -799,12 +805,12 @@ DPSMate.Parser.CHAT_MSG_SPELL_PET_DAMAGE = function(arg1)
 	end
 end
 
--- DPSMate.Parser.CHAT_MSG_SPELL_PET_BUFF = function(arg1)
--- 	this:PetSpellBuff(arg1)
--- 	if DPSMate.SUPER_WOW_LOADED then
--- 		this:PetSpellBuff(string.gsub(arg1, "%s*%(" .. UnitName("player") .. "%)*", ""))
--- 	end
--- end
+DPSMate.Parser.CHAT_MSG_SPELL_PET_BUFF = function(arg1)
+	this:PetSpellBuff(arg1)
+	if DPSMate.SUPER_WOW_LOADED then
+		this:PetSpellBuff(string.gsub(arg1, "%s*%(" .. UnitName("player") .. "%)*", ""))
+	end
+end
 
 
 DPSMate.Parser:SetScript("OnEvent", function() if this[event] then this[event](arg1) end end)
