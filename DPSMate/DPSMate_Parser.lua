@@ -490,6 +490,12 @@ local DPSTool = {}
 local DPSToolTextLeft1 = {}
 local GetPlayerBuff = GetPlayerBuff
 
+-- SuperWoW clean
+function DPSMate.Parser:SuperWoWClean(arg)
+	local fword = arg:match("^(%S+)")
+	return string.gsub(arg, "%s*%(" .. UnitName("player") .. "%)*", ""):gsub("%s*%(" .. fword .. "%)%s*", "")
+end 
+
 -- Begin Functions
 
 function DPSMate.Parser:OnLoad()
@@ -775,21 +781,21 @@ end
 DPSMate.Parser.CHAT_MSG_COMBAT_PET_HITS = function(arg1)
 	this:PetHits(arg1)
 	if DPSMate.SUPER_WOW_LOADED then
-		this:PetHits(string.gsub(arg1, "%s*%(" .. UnitName("player") .. "%)*", ""))
+		this:PetHits(this:SuperWoWClean(arg1))
 	end
 end
 
 DPSMate.Parser.CHAT_MSG_COMBAT_PET_MISSES = function(arg1)
 	this:PetMisses(arg1)
 	if DPSMate.SUPER_WOW_LOADED then
-		this:PetMisses(string.gsub(arg1, "%s*%(" .. UnitName("player") .. "%)*", ""))
+		this:PetMisses(this:SuperWoWClean(arg1))
 	end
 end
 
 DPSMate.Parser.CHAT_MSG_SPELL_PET_DAMAGE = function(arg1)
 	this:PetSpellDamage(arg1)
 	if DPSMate.SUPER_WOW_LOADED then
-		this:PetSpellDamage(string.gsub(arg1, "%s*%(" .. UnitName("player") .. "%)*", ""))
+		this:PetSpellDamage(this:SuperWoWClean(arg1))
 	end
 end
 
